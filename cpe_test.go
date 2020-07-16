@@ -30,6 +30,13 @@ func TestGetCPE(t *testing.T) {
 		t.Errorf("no error received")
 		return
 	}
+
+	// Check that no matching CPE is returned
+	_, err = GetCPE(context.Background(), "cpe:2.3:a:netapp:cloud_backup:-:*:*:*:*:*:*:*")
+	if err == nil {
+		t.Errorf("no error received")
+		return
+	}
 }
 
 func ExampleGetCPE() {

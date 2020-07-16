@@ -42,6 +42,10 @@ func GetCPE(ctx context.Context, cpe string) (*CPE, error) {
 		return nil, err
 	}
 
+	if len(response.Result.CPEs) == 0 {
+		return nil, errors.New("no matching CPE")
+	}
+
 	// The first result should be the only result that matters
 	matchedCPE := response.Result.CPEs[0]
 
