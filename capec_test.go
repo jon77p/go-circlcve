@@ -2,6 +2,7 @@ package circlcve
 
 import (
 	"context"
+	"fmt"
 	"testing"
 )
 
@@ -35,4 +36,14 @@ func TestGetCAPEC(t *testing.T) {
 		t.Errorf("no error received")
 		return
 	}
+}
+
+func ExampleGetCAPEC() {
+	result, err := GetCAPEC(context.Background(), "CAPEC-13")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(result.Name)
+	// Output: Subverting Environment Variable Values
 }

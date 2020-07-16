@@ -2,6 +2,7 @@ package circlcve
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -29,4 +30,16 @@ func TestGetCPE(t *testing.T) {
 		t.Errorf("no error received")
 		return
 	}
+}
+
+func ExampleGetCPE() {
+	cpe := "cpe:/a:openbsd:openssh:7.5:-"
+
+	result, err := GetCPE(context.Background(), cpe)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(result.CPE23URI)
+	// Output: cpe:2.3:a:openbsd:openssh:7.5:-:*:*:*:*:*:*
 }

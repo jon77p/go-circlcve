@@ -2,6 +2,7 @@ package circlcve
 
 import (
 	"context"
+	"fmt"
 	"testing"
 )
 
@@ -23,4 +24,14 @@ func TestGetCVE(t *testing.T) {
 		t.Errorf("no error received")
 		return
 	}
+}
+
+func ExampleGetCVE() {
+	result, err := GetCVE(context.Background(), "CVE-2018-15919")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(result.Id)
+	// Output: CVE-2018-15919
 }

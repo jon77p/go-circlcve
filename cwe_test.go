@@ -2,6 +2,7 @@ package circlcve
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -38,4 +39,14 @@ func TestGetCWE(t *testing.T) {
 		t.Errorf("no error received")
 		return
 	}
+}
+
+func ExampleGetCWE() {
+	result, err := GetCWE(context.Background(), "CWE-200")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(result.Id)
+	// Output: 200
 }
