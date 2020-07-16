@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
+	"time"
 )
 
 const (
@@ -51,6 +53,25 @@ func makeRequest(ctx context.Context, path string, expectedStatus int, params *u
 	}
 
 	return resp, err
+}
+
+// CirclDTime.UnmarshalJSON Implement a json.Unmarshaler to perform custom date-time parsing
+func (t *CirclDTime) UnmarshalJSON(buffer []byte) error {
+	timestr := string(buffer)
+	normalized := strings.Trim(timestr, `"`)
+
+	var longForm string
+	if strings.Index(normalized, "Z") == len(normalized) - 1 {
+		// time formats from NIST for CPEs are not really standard
+		longForm = "2006-01-02T15:04Z"
+	} else {
+		longForm = "2006-01-02T15:04:05"
+	}
+	parsed, err := time.Parse(longForm, normalized)
+	if err == nil {
+		t.Time = parsed
+	}
+	return err
 }
 
 // unmarshal is a wrapper function that tries to decode the input HTTP Response's contents into the input struct

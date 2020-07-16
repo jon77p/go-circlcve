@@ -1,5 +1,12 @@
 package circlcve
 
+import "time"
+
+// CirclDTime is a custom type used to implement date time parsing for JSON
+type CirclDTime struct {
+	time.Time
+}
+
 // CVEAccess contains access information that scores the CVE's difficulty for attackers
 type CVEAccess struct {
 	Authentication	string	`json:"authentication"`
@@ -39,13 +46,13 @@ type CVEVulnerableConfiguration struct {
 
 // CVE is the raw CVE response from circl.lu
 type CVE struct {
-	Modified						string							`json:"Modified"`
-	Published						string							`json:"Published"`
+	Modified						CirclDTime						`json:"Modified"`
+	Published						CirclDTime						`json:"Published"`
 	Access							CVEAccess						`json:"access"`
 	Assigner						string							`json:"assigner"`
 	Capec							[]CVECapec						`json:"capec"`
 	CVSS							float64							`json:"cvss"`
-	CVSSTime						string							`json:"cvss-time"`
+	CVSSTime						CirclDTime						`json:"cvss-time"`
 	CVSSVector						string							`json:"cvss-vector"`
 	CWE								string							`json:"cwe"`
 	Id								string							`json:"id"`
@@ -94,7 +101,7 @@ type CPE struct {
 	Deprecated			bool		`json:"deprecated"`
 	CPE22URI			string		`json:"cpe22Uri"`
 	CPE23URI			string		`json:"cpe23Uri"`
-	LastModifiedDate	string		`json:"lastModifiedDate"`
+	LastModifiedDate	CirclDTime	`json:"lastModifiedDate"`
 	Titles				[]CPETitle	`json:"titles"`
 	Refs				[]CPERef	`json:"refs"`
 	DeprecatedBy		[]string	`json:"deprecatedBy"`
