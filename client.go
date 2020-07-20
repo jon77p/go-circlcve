@@ -61,7 +61,7 @@ func (t *CirclDTime) UnmarshalJSON(buffer []byte) error {
 	normalized := strings.Trim(timestr, `"`)
 
 	var longForm string
-	if strings.Index(normalized, "Z") == len(normalized) - 1 {
+	if strings.Index(normalized, "Z") == len(normalized)-1 {
 		// time formats from NIST for CPEs are not really standard
 		longForm = "2006-01-02T15:04Z"
 	} else {

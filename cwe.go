@@ -23,7 +23,7 @@ func fixDescription(cwe *CWE) {
 func GetCWEs(ctx context.Context) ([]CWE, error) {
 	response := []CWE{}
 
-	err := safeJSONRequest(ctx, baseURL + cwePath, http.StatusOK, nil, &response)
+	err := safeJSONRequest(ctx, baseURL+cwePath, http.StatusOK, nil, &response)
 	if err != nil {
 		return nil, err
 	}

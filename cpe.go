@@ -24,17 +24,17 @@ func GetCPE(ctx context.Context, cpe string) (*CPE, error) {
 	params.Add("cpeMatchString", cpe)
 
 	// Temporarily defined, since only a single result should be returned for any given CPE
-	response := struct{
-		ResultsPerPage	int			`json:"resultsPerPage"`
-		StartIndex		int			`json:"startIndex"`
-		TotalResults	int			`json:"totalResults"`
-		Result			struct{
-			DataType		string	`json:"dataType"`
-			FeedVersion		string	`json:"feedVersion"`
-			CPECount		int		`json:"cpeCount"`
-			FeedTimeStamp	string	`json:"feedTimestamp"`
-			CPEs			[]CPE	`json:"cpes"`
-		}							`json:"result"`
+	response := struct {
+		ResultsPerPage int `json:"resultsPerPage"`
+		StartIndex     int `json:"startIndex"`
+		TotalResults   int `json:"totalResults"`
+		Result         struct {
+			DataType      string `json:"dataType"`
+			FeedVersion   string `json:"feedVersion"`
+			CPECount      int    `json:"cpeCount"`
+			FeedTimeStamp string `json:"feedTimestamp"`
+			CPEs          []CPE  `json:"cpes"`
+		} `json:"result"`
 	}{}
 
 	err := safeJSONRequest(ctx, path, http.StatusOK, &params, &response)
