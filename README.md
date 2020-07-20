@@ -1,6 +1,7 @@
 # CIRCL cve-search API Go Wrapper
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/jon77p/go-circlcve)](https://goreportcard.com/report/github.com/jon77p/go-circlcve)
+
 [![Documentation](https://godoc.org/github.com/jon77p/go-circlcve?status.svg)](https://godoc.org/github.com/jon77p/go-circlcve)
 
 ## Supported Functionality
