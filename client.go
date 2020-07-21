@@ -82,9 +82,9 @@ func unmarshal(resp *http.Response, response interface{}) error {
 	return json.NewDecoder(resp.Body).Decode(&response)
 }
 
-// safeJSONRequest is a helper function that contains the logic to safely make an API request and decode the JSON response into the input response structure
+// SafeJSONRequest is a helper function that contains the logic to safely make an API request and decode the JSON response into the input response structure
 // If the request is unable to be made or the response cannot be decoded, an error will be returned
-func safeJSONRequest(ctx context.Context, path string, expectedStatus int, params *url.Values, response interface{}) error {
+func SafeJSONRequest(ctx context.Context, path string, expectedStatus int, params *url.Values, response interface{}) error {
 	resp, err := makeRequest(ctx, path, expectedStatus, params)
 	if err != nil {
 		return err

@@ -21,7 +21,7 @@ func GetCAPEC(ctx context.Context, capecid string) (*CAPEC, error) {
 	path := baseURL + capecPath + normalizedCAPEC
 	response := CAPEC{}
 
-	err := safeJSONRequest(ctx, path, http.StatusOK, nil, &response)
+	err := SafeJSONRequest(ctx, path, http.StatusOK, nil, &response)
 	if err != nil {
 		return nil, err
 	}

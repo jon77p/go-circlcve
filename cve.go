@@ -27,7 +27,7 @@ func GetCVE(ctx context.Context, cveid string) (*CVE, error) {
 	path := baseURL + cvePath + normalizedCVE
 	response := CVE{}
 
-	err := safeJSONRequest(ctx, path, http.StatusOK, nil, &response)
+	err := SafeJSONRequest(ctx, path, http.StatusOK, nil, &response)
 	if err != nil {
 		return nil, err
 	}

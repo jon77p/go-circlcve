@@ -37,7 +37,7 @@ func GetCPE(ctx context.Context, cpe string) (*CPE, error) {
 		} `json:"result"`
 	}{}
 
-	err := safeJSONRequest(ctx, path, http.StatusOK, &params, &response)
+	err := SafeJSONRequest(ctx, path, http.StatusOK, &params, &response)
 	if err != nil {
 		return nil, err
 	}
