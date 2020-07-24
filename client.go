@@ -15,14 +15,6 @@ const (
 	baseURL = "https://cve.circl.lu/api"
 )
 
-// Client A circlcve client
-type Client struct {
-}
-
-func (c *Client) makeRequest(ctx context.Context, path string, expectedStatus int, params *url.Values) (*http.Response, error) {
-	return makeRequest(ctx, path, expectedStatus, params)
-}
-
 // makeRequest is a helper function that
 // The expectedStatus ensures that the API result's status code is the same, or an error is raised
 // If params is nil, no URL parameters will be added
@@ -79,7 +71,7 @@ func (t *CirclDTime) UnmarshalJSON(buffer []byte) error {
 // If the Response cannot be unmarshalled, an error will be returned
 func unmarshal(resp *http.Response, response interface{}) error {
 	defer resp.Body.Close()
-	return json.NewDecoder(resp.Body).Decode(&response)
+	return json.NewDecoder(resp.Body).Decode(response)
 }
 
 // SafeJSONRequest is a helper function that contains the logic to safely make an API request and decode the JSON response into the input response structure
@@ -90,5 +82,5 @@ func SafeJSONRequest(ctx context.Context, path string, expectedStatus int, param
 		return err
 	}
 
-	return unmarshal(resp, &response)
+	return unmarshal(resp, response)
 }
