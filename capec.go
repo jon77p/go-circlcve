@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"strings"
 )
 
 const capecPath = "/capec/"
@@ -13,7 +12,7 @@ const capecPath = "/capec/"
 // GetCAPEC retrieves the CAPEC information for the specified capecid
 // The input capecid must either be just the numerical id or in the CAPEC-x format
 func GetCAPEC(ctx context.Context, capecid string) (*CAPEC, error) {
-	normalizedCAPEC := strings.ReplaceAll(capecid, "CAPEC-", "")
+	normalizedCAPEC := normalizeAll([]string{capecid}, "CAPEC-", "")[0]
 	if normalizedCAPEC == "" {
 		return nil, errors.New("missing CAPEC")
 	}

@@ -53,6 +53,20 @@ func TestGetCWE(t *testing.T) {
 	}
 }
 
+func TestGetSomeCWEs(t *testing.T) {
+	cweids := []string{"CWE-15", "CWE-20", "CWE-200", "CWE-285", "CWE-302", "CWE-353", "CWE-73", "CWE-74"}
+	result, err := GetSomeCWEs(context.Background(), cweids)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	if len(result) != len(cweids) {
+		t.Error("Failed to retrieve all CWEs")
+		return
+	}
+}
+
 func ExampleGetCWE() {
 	result, err := GetCWE(context.Background(), "CWE-200")
 	if err != nil {

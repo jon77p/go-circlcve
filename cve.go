@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"strings"
 )
 
 const cvePath = "/cve/"
@@ -18,12 +17,7 @@ func GetCVE(ctx context.Context, cveid string) (*CVE, error) {
 	}
 
 	// normalize the input cveid to the CVE-x format
-	var normalizedCVE string
-	if !strings.HasPrefix(cveid, "CVE-") {
-		normalizedCVE = "CVE-" + cveid
-	} else {
-		normalizedCVE = cveid
-	}
+	normalizedCVE := normalizeAll([]string{cveid}, "", "CVE-")[0]
 
 	path := baseURL + cvePath + normalizedCVE
 	response := CVE{}

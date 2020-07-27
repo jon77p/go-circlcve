@@ -35,11 +35,32 @@ func GetCWEs(ctx context.Context) ([]CWE, error) {
 	return response, err
 }
 
+func GetSomeCWEs(ctx context.Context, cweids []string) ([]CWE, error) {
+	normalizedCWEs := normalizeAll(cweids, "CWE-", "")
+	results := []CWE{}
+
+	cwes, err := GetCWEs(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, c := range cwes {
+		for _, n := range normalizedCWEs {
+			if c.Id == n {
+				results = append(results, c)
+				break
+			}
+		}
+	}
+
+	return results, nil
+}
+
 // GetCWE retrieves the CWE entry for the specified cweid, or errors if nonexistent
 // The input cweid must either be just the numerical id or in the CWE-x format
 func GetCWE(ctx context.Context, cweid string) (*CWE, error) {
-	normalizedCWE := strings.ReplaceAll(cweid, "CWE-", "")
-	cwes, err := GetCWEs(ctx)
+	normalizedCWE := normalizeAll([]string{cweid}, "CWE-", "")[0]
+	cwes, err := GetSomeCWEs(ctx, []string{cweid})
 	if err != nil {
 		return nil, err
 	}

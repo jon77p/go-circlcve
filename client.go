@@ -84,3 +84,26 @@ func SafeJSONRequest(ctx context.Context, path string, expectedStatus int, param
 
 	return unmarshal(resp, response)
 }
+
+// normalizeAll is a helper function that allows for all input strings to be normalized to the same format and returned to the caller
+// If the old parameter is an empty string, then the new parameter will be prefixed to all strings in the input string array that do not already have the prefix.
+// If the old parameter is not an empty string, then all instances of old will be replaced with new for all strings in the input string array
+func normalizeAll(inputs []string, old string, new string) []string {
+	result := []string{}
+	for _, s := range inputs {
+		var normalized string
+		if old != "" {
+			normalized = strings.ReplaceAll(s, old, new)
+		} else {
+			if !strings.HasPrefix(s, new) {
+				normalized = new + s
+			} else {
+				normalized = s
+			}
+		}
+
+		result = append(result, normalized)
+	}
+
+	return result
+}
