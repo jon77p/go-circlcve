@@ -33,10 +33,22 @@ func TestGetCWE(t *testing.T) {
 		return
 	}
 
-	// Check for a failure for an invalid/missing CWE
+	// Check for a failure for an empty CWE
 	_, err = GetCWE(context.Background(), "")
 	if err == nil {
 		t.Errorf("no error received")
+		return
+	}
+
+	// Check for a failure for a missing CWE
+	r, err := GetCWE(context.Background(), "CWE-0000")
+	if err == nil {
+		t.Errorf("no error received")
+		return
+	}
+	// Check for a null result
+	if r != nil {
+		t.Errorf("non-nil result received")
 		return
 	}
 }

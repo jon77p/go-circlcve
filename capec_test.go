@@ -30,10 +30,22 @@ func TestGetCAPEC(t *testing.T) {
 		return
 	}
 
-	// Check for a failure for an invalid/missing CWE
+	// Check for a failure for an empty CAPEC
 	_, err = GetCAPEC(context.Background(), "")
 	if err == nil {
 		t.Errorf("no error received")
+		return
+	}
+
+	// Check for a failure for a missing CAPEC
+	r, err := GetCAPEC(context.Background(), "CAPEC-719")
+	if err == nil {
+		t.Errorf("no error received")
+		return
+	}
+	// Check for a null result
+	if r != nil {
+		t.Errorf("non-nil result received")
 		return
 	}
 }

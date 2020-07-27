@@ -18,10 +18,22 @@ func TestGetCVE(t *testing.T) {
 		return
 	}
 
-	// Check for a failure for an invalid/missing CVE
+	// Check for a failure for an empty CVE
 	_, err = GetCVE(context.Background(), "")
 	if err == nil {
 		t.Errorf("no error received")
+		return
+	}
+
+	// Check for a failure for a missing CVE
+	r, err := GetCVE(context.Background(), "CVE-2999-0000")
+	if err == nil {
+		t.Errorf("no error received")
+		return
+	}
+	// Check for a null result
+	if r != nil {
+		t.Errorf("non-nil result received")
 		return
 	}
 }

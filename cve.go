@@ -3,6 +3,7 @@ package circlcve
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 )
@@ -32,5 +33,9 @@ func GetCVE(ctx context.Context, cveid string) (*CVE, error) {
 		return nil, err
 	}
 
-	return &response, err
+	if response.Id != normalizedCVE {
+		return nil, fmt.Errorf("missing CVE %s", normalizedCVE)
+	} else {
+		return &response, err
+	}
 }

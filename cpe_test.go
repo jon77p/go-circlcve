@@ -24,17 +24,22 @@ func TestGetCPE(t *testing.T) {
 		return
 	}
 
-	// Check for a failure for an invalid/missing CPE
+	// Check for a failure for an empty CPE
 	_, err = GetCPE(context.Background(), "")
 	if err == nil {
 		t.Errorf("no error received")
 		return
 	}
 
-	// Check that no matching CPE is returned
-	_, err = GetCPE(context.Background(), "cpe:2.3:a:netapp:cloud_backup:-:*:*:*:*:*:*:*")
+	// Check for a failure for a missing CPE
+	r, err := GetCPE(context.Background(), "cpe:2.3:a:netapp:cloud_backup:-:*:*:*:*:*:*:*")
 	if err == nil {
 		t.Errorf("no error received")
+		return
+	}
+	// Check for a null result
+	if r != nil {
+		t.Errorf("non-nil result received")
 		return
 	}
 }

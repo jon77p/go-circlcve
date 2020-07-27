@@ -3,6 +3,7 @@ package circlcve
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 )
@@ -26,5 +27,9 @@ func GetCAPEC(ctx context.Context, capecid string) (*CAPEC, error) {
 		return nil, err
 	}
 
-	return &response, err
+	if response.Id != normalizedCAPEC {
+		return nil, fmt.Errorf("missing CAPEC %s", normalizedCAPEC)
+	} else {
+		return &response, err
+	}
 }
