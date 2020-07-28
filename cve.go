@@ -13,6 +13,9 @@ const (
 	newCVEPrefix = "CVE-"
 )
 
+// GetCVEs retrieves a map of CVE entries for all specified cveids
+// If a cveid cannot be found, then an error will be attached to that entry
+// The input cveids must all either be just the numerical id or in the CVE-x format
 func GetCVEs(ctx context.Context, cveids []string) (CirclResults, error) {
 	currentPath := baseURL + cvePath
 

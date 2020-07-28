@@ -13,6 +13,9 @@ const (
 	newCAPECprefix = ""
 )
 
+// GetCAPECs retrieves a map of CAPEC entries for all specified capecids
+// If a capecid cannot be found, then an error will be attached to that entry
+// The input capecids must all either be just the numerical id or in the CAPEC-x format
 func GetCAPECs(ctx context.Context, capecids []string) (CirclResults, error) {
 	currentPath := baseURL + capecPath
 

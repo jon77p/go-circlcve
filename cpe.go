@@ -15,6 +15,7 @@ const (
 	newCPEPrefix = ""
 )
 
+// NVDResponse contains the necessary JSON definition for CPE responses from nvd.nist.gov
 type NVDResponse struct {
 	ResultsPerPage int `json:"resultsPerPage"`
 	StartIndex     int `json:"startIndex"`
@@ -28,6 +29,8 @@ type NVDResponse struct {
 	} `json:"result"`
 }
 
+// GetCPEs retrieves a map of CPE entries for all specified cpeuris
+// If a cpeuri cannot be found, then an error will be attached to that entry
 func GetCPEs(ctx context.Context, cpeuris []string) (CirclResults, error) {
 	path := baseNVDURL + "/cpes/1.0"
 

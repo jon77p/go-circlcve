@@ -38,6 +38,9 @@ func GetAllCWEs(ctx context.Context) ([]CWE, error) {
 	return response, err
 }
 
+// GetCWEs retrieves a map of CWE entries for all specified cweids
+// If a cweid cannot be found, then an error will be attached to that entry
+// The input cweids must all either be just the numerical id or in the CWE-x format
 func GetCWEs(ctx context.Context, cweids []string) (CirclResults, error) {
 	normalizedCWEs := normalizeAll(cweids, oldCWEPrefix, newCWEPrefix)
 

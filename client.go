@@ -125,6 +125,8 @@ func (c CPE) String() string {
 	return c.CPE23URI
 }
 
+// insertCircl adds the specified Circl result into the CirclResults map
+// This only happens if there is a nonempty list of normalized identifiers or if the identifier is present in the input list of normalized identifiers, and also if the identifier is not already found in the CirclResults map
 func (results CirclResults) insertCircl(normalized []string, c Circl, id string, err error, typestr string) {
 	key := typestr + id
 	_, ok := results[key]
@@ -133,6 +135,7 @@ func (results CirclResults) insertCircl(normalized []string, c Circl, id string,
 	}
 }
 
+// insertCirclErrors adds CirclResult entries with errors for all keys in the normalized identifiers array that are not in the CirclResults map
 func (results CirclResults) insertCirclErrors(normalized []string, typestr string) {
 	for _, n := range normalized {
 		key := typestr + n
@@ -142,6 +145,8 @@ func (results CirclResults) insertCirclErrors(normalized []string, typestr strin
 	}
 }
 
+// ConvertCWE attempts to convert the CirclResult's data to a CWE and returns its related error (if present)
+// If the CirclResult's data is not a CWE entry, an error will be returned.
 func (e CirclResult) ConvertCWE() (*CWE, error) {
 	if e.error != nil {
 		return nil, e.error
@@ -154,6 +159,8 @@ func (e CirclResult) ConvertCWE() (*CWE, error) {
 	return &result, nil
 }
 
+// ConvertCVE attempts to convert the CirclResult's data to a CVE and returns its related error (if present)
+// If the CirclResult's data is not a CVE entry, an error will be returned.
 func (e CirclResult) ConvertCVE() (*CVE, error) {
 	if e.error != nil {
 		return nil, e.error
@@ -166,6 +173,8 @@ func (e CirclResult) ConvertCVE() (*CVE, error) {
 	return &result, nil
 }
 
+// ConvertCAPEC attempts to convert the CirclResult's data to a CAPEC and returns its related error (if present)
+// If the CirclResult's data is not a CAPEC entry, an error will be returned.
 func (e CirclResult) ConvertCAPEC() (*CAPEC, error) {
 	if e.error != nil {
 		return nil, e.error
@@ -178,6 +187,8 @@ func (e CirclResult) ConvertCAPEC() (*CAPEC, error) {
 	return &result, nil
 }
 
+// ConvertCPE attempts to convert the CirclResult's data to a CPE and returns its related error (if present)
+// If the CirclResult's data is not a CPE entry, an error will be returned.
 func (e CirclResult) ConvertCPE() (*CPE, error) {
 	if e.error != nil {
 		return nil, e.error

@@ -9,15 +9,18 @@ type CirclDTime struct {
 	time.Time
 }
 
+// Circl is an interface type that ensures that other types that implement this interface have a String() method
 type Circl interface {
 	String() string
 }
 
+// CirclResult is a custom type that allows for an error (if present) to be stored with a type that implements the Circl interface
 type CirclResult struct {
-	data  interface{}
+	data  Circl
 	error error
 }
 
+// CirclResults is used as a shorthand for defining a map of a string to a CirclResult
 type CirclResults map[string]CirclResult
 
 // CVEAccess contains access information that scores the CVE's difficulty for attackers
