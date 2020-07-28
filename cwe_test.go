@@ -7,8 +7,8 @@ import (
 	"testing"
 )
 
-func TestGetCWEs(t *testing.T) {
-	results, err := GetCWEs(context.Background())
+func TestGetAllCWEs(t *testing.T) {
+	results, err := GetAllCWEs(context.Background())
 	if err != nil {
 		t.Error(err)
 		return
@@ -53,9 +53,9 @@ func TestGetCWE(t *testing.T) {
 	}
 }
 
-func TestGetSomeCWEs(t *testing.T) {
+func TestGetCWEs(t *testing.T) {
 	cweids := []string{"CWE-15", "CWE-20", "CWE-200", "CWE-285", "CWE-302", "CWE-353", "CWE-73", "CWE-74", "CWE-9999"}
-	result, err := GetSomeCWEs(context.Background(), cweids)
+	result, err := GetCWEs(context.Background(), cweids)
 	if err != nil {
 		t.Error(err)
 		return

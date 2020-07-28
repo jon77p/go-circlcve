@@ -22,8 +22,8 @@ func fixDescription(cwe *CWE) {
 	cwe.Description = fixed
 }
 
-// GetCWEs retrieves a list of all CWEs (Common Weakness Enumerations)
-func GetCWEs(ctx context.Context) ([]CWE, error) {
+// GetAllCWEs retrieves a list of all CWEs (Common Weakness Enumerations)
+func GetAllCWEs(ctx context.Context) ([]CWE, error) {
 	response := []CWE{}
 
 	err := SafeJSONRequest(ctx, baseURL+cwePath, http.StatusOK, nil, &response)
@@ -38,12 +38,12 @@ func GetCWEs(ctx context.Context) ([]CWE, error) {
 	return response, err
 }
 
-func GetSomeCWEs(ctx context.Context, cweids []string) (CirclResults, error) {
+func GetCWEs(ctx context.Context, cweids []string) (CirclResults, error) {
 	normalizedCWEs := normalizeAll(cweids, oldCWEPrefix, newCWEPrefix)
 
 	results := make(CirclResults)
 
-	cwes, err := GetCWEs(ctx)
+	cwes, err := GetAllCWEs(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func GetSomeCWEs(ctx context.Context, cweids []string) (CirclResults, error) {
 // The input cweid must either be just the numerical id or in the CWE-x format
 func GetCWE(ctx context.Context, cweid string) (*CWE, error) {
 	normalizedCWE := normalizeAll([]string{cweid}, oldCWEPrefix, newCWEPrefix)[0]
-	cwes, err := GetSomeCWEs(ctx, []string{normalizedCWE})
+	cwes, err := GetCWEs(ctx, []string{normalizedCWE})
 	if err != nil {
 		return nil, err
 	}
