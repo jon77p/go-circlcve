@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/go-openapi/swag"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -106,4 +107,85 @@ func normalizeAll(inputs []string, old string, new string) []string {
 	}
 
 	return result
+}
+
+func (c CWE) String() string {
+	return "CWE-" + c.Id
+}
+
+func (c CVE) String() string {
+	return c.Id
+}
+
+func (c CAPEC) String() string {
+	return c.Id
+}
+
+func (c CPE) String() string {
+	return c.CPE23URI
+}
+
+func (results CirclResults) insertCircl(normalized []string, c Circl, id string, err error, typestr string) {
+	key := typestr + id
+	_, ok := results[key]
+	if (len(normalized) == 0 || swag.ContainsStrings(normalized, id)) && !ok {
+		results[key] = CirclResult{c, err}
+	}
+}
+
+func (results CirclResults) insertCirclErrors(normalized []string, typestr string) {
+	for _, n := range normalized {
+		key := typestr + n
+		if _, ok := results[key]; !ok {
+			results[key] = CirclResult{nil, fmt.Errorf("Invalid %s", key)}
+		}
+	}
+}
+
+func (e CirclResult) ConvertCWE() (*CWE, error) {
+	if e.error != nil {
+		return nil, e.error
+	}
+
+	result, ok := e.data.(CWE)
+	if !ok {
+		return nil, fmt.Errorf("cannot convert entry type to %s: %T", "CWE", e.data)
+	}
+	return &result, nil
+}
+
+func (e CirclResult) ConvertCVE() (*CVE, error) {
+	if e.error != nil {
+		return nil, e.error
+	}
+
+	result, ok := e.data.(CVE)
+	if !ok {
+		return nil, fmt.Errorf("cannot convert entry type to %s: %T", "CVE", e.data)
+	}
+	return &result, nil
+}
+
+func (e CirclResult) ConvertCAPEC() (*CAPEC, error) {
+	if e.error != nil {
+		return nil, e.error
+	}
+
+	result, ok := e.data.(CAPEC)
+	if !ok {
+		return nil, fmt.Errorf("cannot convert entry type to %s: %T", "CAPEC", e.data)
+	}
+	return &result, nil
+}
+
+func (e CirclResult) ConvertCPE() (*CPE, error) {
+	if e.error != nil {
+		return nil, e.error
+	}
+
+	result, ok := e.data.(CPE)
+	if !ok {
+		return nil, fmt.Errorf("cannot convert entry type to %s: %T", "CPE", e.data)
+	}
+	return &result, nil
 }

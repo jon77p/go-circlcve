@@ -2,13 +2,16 @@ package circlcve
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
 )
 
-const cwePath = "/cwe"
+const (
+	cwePath      = "/cwe"
+	oldCWEPrefix = "CWE-"
+	newCWEPrefix = ""
+)
 
 // fixDescription removes the duplicate description text found in circl.lu's CWE endpoint results
 func fixDescription(cwe *CWE) {
@@ -35,9 +38,10 @@ func GetCWEs(ctx context.Context) ([]CWE, error) {
 	return response, err
 }
 
-func GetSomeCWEs(ctx context.Context, cweids []string) ([]CWE, error) {
-	normalizedCWEs := normalizeAll(cweids, "CWE-", "")
-	results := []CWE{}
+func GetSomeCWEs(ctx context.Context, cweids []string) (CirclResults, error) {
+	normalizedCWEs := normalizeAll(cweids, oldCWEPrefix, newCWEPrefix)
+
+	results := make(CirclResults)
 
 	cwes, err := GetCWEs(ctx)
 	if err != nil {
@@ -45,13 +49,10 @@ func GetSomeCWEs(ctx context.Context, cweids []string) ([]CWE, error) {
 	}
 
 	for _, c := range cwes {
-		for _, n := range normalizedCWEs {
-			if c.Id == n {
-				results = append(results, c)
-				break
-			}
-		}
+		results.insertCircl(normalizedCWEs, c, c.Id, nil, oldCWEPrefix)
 	}
+
+	results.insertCirclErrors(normalizedCWEs, oldCWEPrefix)
 
 	return results, nil
 }
@@ -59,18 +60,15 @@ func GetSomeCWEs(ctx context.Context, cweids []string) ([]CWE, error) {
 // GetCWE retrieves the CWE entry for the specified cweid, or errors if nonexistent
 // The input cweid must either be just the numerical id or in the CWE-x format
 func GetCWE(ctx context.Context, cweid string) (*CWE, error) {
-	normalizedCWE := normalizeAll([]string{cweid}, "CWE-", "")[0]
-	cwes, err := GetSomeCWEs(ctx, []string{cweid})
+	normalizedCWE := normalizeAll([]string{cweid}, oldCWEPrefix, newCWEPrefix)[0]
+	cwes, err := GetSomeCWEs(ctx, []string{normalizedCWE})
 	if err != nil {
 		return nil, err
 	}
 
-	for i := range cwes {
-		cwe := cwes[i]
-		if cwe.Id == normalizedCWE {
-			return &cwes[i], nil
-		}
+	entry, ok := cwes[oldCWEPrefix+normalizedCWE]
+	if !ok {
+		return nil, fmt.Errorf("Missing or invalid CWE: %s", oldCWEPrefix+normalizedCWE)
 	}
-
-	return nil, errors.New(fmt.Sprintf("Missing or invalid CWE: %s", cweid))
+	return entry.ConvertCWE()
 }

@@ -3,53 +3,77 @@ package circlcve
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 )
 
 // cve.circl.lu appears to have disabled their API functionality for CPEs, but those of nvd.nist.gov work instead
 const (
-	baseNVDURL = "https://services.nvd.nist.gov/rest/json"
+	baseNVDURL   = "https://services.nvd.nist.gov/rest/json"
+	oldCPEPrefix = ""
+	newCPEPrefix = ""
 )
 
-// GetCPE retrieves any available information from nvd.nist.gov for the input CPE
-func GetCPE(ctx context.Context, cpe string) (*CPE, error) {
-	if cpe == "" {
-		return nil, errors.New("missing CPE")
-	}
+type NVDResponse struct {
+	ResultsPerPage int `json:"resultsPerPage"`
+	StartIndex     int `json:"startIndex"`
+	TotalResults   int `json:"totalResults"`
+	Result         struct {
+		DataType      string `json:"dataType"`
+		FeedVersion   string `json:"feedVersion"`
+		CPECount      int    `json:"cpeCount"`
+		FeedTimeStamp string `json:"feedTimestamp"`
+		CPEs          []CPE  `json:"cpes"`
+	} `json:"result"`
+}
+
+func GetCPEs(ctx context.Context, cpeuris []string) (CirclResults, error) {
 	path := baseNVDURL + "/cpes/1.0"
 
-	params := url.Values{}
-	params.Add("addOns", "cves")
-	params.Add("cpeMatchString", cpe)
+	results := make(CirclResults)
 
-	// Temporarily defined, since only a single result should be returned for any given CPE
-	response := struct {
-		ResultsPerPage int `json:"resultsPerPage"`
-		StartIndex     int `json:"startIndex"`
-		TotalResults   int `json:"totalResults"`
-		Result         struct {
-			DataType      string `json:"dataType"`
-			FeedVersion   string `json:"feedVersion"`
-			CPECount      int    `json:"cpeCount"`
-			FeedTimeStamp string `json:"feedTimestamp"`
-			CPEs          []CPE  `json:"cpes"`
-		} `json:"result"`
-	}{}
+	normalizedCPEs := normalizeAll(cpeuris, oldCPEPrefix, newCPEPrefix)
 
-	err := SafeJSONRequest(ctx, path, http.StatusOK, &params, &response)
+	for _, n := range normalizedCPEs {
+		params := url.Values{}
+		params.Add("addOns", "cves")
+		params.Add("cpeMatchString", n)
+
+		response := NVDResponse{}
+
+		err := SafeJSONRequest(ctx, path, http.StatusOK, &params, &response)
+
+		matchedCPE := CPE{}
+
+		if len(response.Result.CPEs) == 0 {
+			err = errors.New("no matching CPE")
+		} else {
+			// The first result should be the only result that matters
+			matchedCPE = response.Result.CPEs[0]
+		}
+
+		results.insertCircl([]string{}, matchedCPE, n, err, oldCPEPrefix)
+	}
+
+	return results, nil
+}
+
+// GetCPE retrieves any available information from nvd.nist.gov for the input CPE
+func GetCPE(ctx context.Context, cpeuri string) (*CPE, error) {
+	if cpeuri == "" {
+		return nil, errors.New("missing CPE")
+	}
+	cpes, err := GetCPEs(ctx, []string{cpeuri})
 	if err != nil {
 		return nil, err
 	}
 
-	if len(response.Result.CPEs) == 0 {
-		return nil, errors.New("no matching CPE")
+	entry, ok := cpes[oldCPEPrefix+cpeuri]
+	if !ok {
+		return nil, fmt.Errorf("missing or invalid CPE: %s", oldCPEPrefix+cpeuri)
 	}
-
-	// The first result should be the only result that matters
-	matchedCPE := response.Result.CPEs[0]
-
-	return &matchedCPE, err
+	return entry.ConvertCPE()
 }
 
 // todo: convert given product to CPE2.3 for use in GetCPE()
