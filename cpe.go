@@ -47,7 +47,7 @@ func GetCPEs(ctx context.Context, cpeuris []string) (CirclResults, error) {
 		matchedCPE := CPE{}
 
 		if len(response.Result.CPEs) == 0 {
-			err = errors.New("no matching CPE")
+			err = fmt.Errorf("no matching CPE for %s", oldCPEPrefix + n)
 		} else {
 			// The first result should be the only result that matters
 			matchedCPE = response.Result.CPEs[0]
