@@ -48,7 +48,7 @@ func makeRequest(ctx context.Context, path string, expectedStatus int, params *u
 	return resp, err
 }
 
-// CirclDTime.UnmarshalJSON Implement a json.Unmarshaler to perform custom date-time parsing
+// UnmarshalJSON Implements a json.Unmarshaler on a *CirclDTime to perform custom date-time parsing
 func (t *CirclDTime) UnmarshalJSON(buffer []byte) error {
 	timestr := string(buffer)
 	normalized := strings.Trim(timestr, `"`)
