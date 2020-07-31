@@ -5,7 +5,7 @@
 
 ## Supported Functionality
 
-- [ ] Convert a CPE code in CPE2.2 or CPE2.3 format to the CPE2.3 standard, stripped of appendices
+- [ ] Convert a CPE (Common Platform Enumeration) code in CPE2.2 or CPE2.3 format to the CPE2.3 standard, stripped of appendices
 
 - [ ] Retrieve all vendors
 
