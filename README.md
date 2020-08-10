@@ -5,15 +5,15 @@
 
 ## Supported Functionality
 
-- [ ] Convert a CPE code in CPE2.2 or CPE2.3 format to the CPE2.3 standard, stripped of appendices
+- [ ] Convert a CPE (Common Platform Enumeration) code in CPE2.2 or CPE2.3 format to the CPE2.3 standard, stripped of appendices
 
 - [ ] Retrieve all vendors
 
 - [ ] Retrieve all products associated to a vendor
 
-- [ ] Retrieve all CVE vulnerabilities per vendor and a specific product
+- [ ] Retrieve all CVE (Common Vulnerabilities and Exposures) entries per vendor and a specific product
 
-- [ ] Retrieve all CVE vulnerabilities related to a product in CPE2.2 or CPE2.3 format
+- [ ] Retrieve all CVE entries related to a product in CPE2.2 or CPE2.3 format
 
 - [x] Get CVE information per CVE-ID
 
