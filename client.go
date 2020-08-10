@@ -118,7 +118,7 @@ func (c CVE) String() string {
 }
 
 func (c CAPEC) String() string {
-	return c.Id
+	return "CAPEC-" + c.Id
 }
 
 func (c CPE) String() string {
