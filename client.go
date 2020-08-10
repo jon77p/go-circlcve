@@ -125,6 +125,29 @@ func (c CPE) String() string {
 	return c.CPE23URI
 }
 
+func (r CirclResult) String() string {
+	if cwe, err := r.ConvertCWE(); err != nil {
+		return cwe.String()
+	} else if cve, err := r.ConvertCVE(); err != nil {
+		return cve.String()
+	} else if capec, err := r.ConvertCAPEC(); err != nil {
+		return capec.String()
+	} else if cpe, err := r.ConvertCPE(); err != nil {
+		return cpe.String()
+	} else {
+		return ""
+	}
+}
+
+func (results CirclResults) String() []string {
+	var result []string
+	for _, r := range results {
+		result = append(result, r.String())
+	}
+
+	return result
+}
+
 // insertCircl adds the specified Circl result into the CirclResults map
 // This only happens if there is a nonempty list of normalized identifiers or if the identifier is present in the input list of normalized identifiers, and also if the identifier is not already found in the CirclResults map
 func (results CirclResults) insertCircl(normalized []string, c Circl, id string, err error, typestr string) {
