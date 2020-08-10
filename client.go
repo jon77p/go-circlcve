@@ -126,13 +126,13 @@ func (c CPE) String() string {
 }
 
 func (r CirclResult) String() string {
-	if cwe, err := r.ConvertCWE(); cwe != nil && err != nil {
+	if cwe, err := r.ConvertCWE(); cwe != nil && err == nil {
 		return cwe.String()
-	} else if cve, err := r.ConvertCVE(); cve != nil && err != nil {
+	} else if cve, err := r.ConvertCVE(); cve != nil && err == nil {
 		return cve.String()
-	} else if capec, err := r.ConvertCAPEC(); capec != nil && err != nil {
+	} else if capec, err := r.ConvertCAPEC(); capec != nil && err == nil {
 		return capec.String()
-	} else if cpe, err := r.ConvertCPE(); cpe != nil && err != nil {
+	} else if cpe, err := r.ConvertCPE(); cpe != nil && err == nil {
 		return cpe.String()
 	} else {
 		return ""
