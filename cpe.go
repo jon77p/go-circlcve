@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"regexp"
 )
 
 // cve.circl.lu appears to have disabled their API functionality for CPEs, but those of nvd.nist.gov work instead
@@ -13,6 +14,30 @@ const (
 	baseNVDURL   = "https://services.nvd.nist.gov/rest/json"
 	oldCPEPrefix = ""
 	newCPEPrefix = ""
+
+	avstringRegex = `(?::([?*]?(?:(?:[a-z0-9\-._]|(?:[\\][\\?*!"#$%&'()+,/:;<=>@[\]^{|}~])|[%~])*[?*\-]?)))?`
+
+)
+
+var (
+	// CPEComponents is a collection of names for all valid components within a valid CPE URI.
+	CPEComponents = []string{"cpe_name", "cpe_version", "part", "vendor", "product", "version", "update", "edition", "lang", "sw_edition", "target_sw", "target_hw", "other"}
+
+	// CPERegex is a regex that matches fully valid CPE 2.2/2.3-compliant URIs, separating each component into a submatch.
+	CPERegex = regexp.MustCompile(`(?i)` +
+		`(cpe)` + // cpe
+		`(?::(2[.]3))?` + // cpe version
+		`:[/]?([aoh*\-])` + // part
+		avstringRegex + // vendor
+		avstringRegex + // product
+		avstringRegex + // version
+		avstringRegex + // update
+		avstringRegex + // edition
+		`(?::((?:[a-z]{2,3}(?:-(?:[a-z]{2}|[0-9]{3}))?)|[*\-]))?` + // lang
+		avstringRegex + // sw_edition
+		avstringRegex + // target_sw
+		avstringRegex + // target_hw
+		avstringRegex) // other
 )
 
 // NVDResponse contains the necessary JSON definition for CPE responses from nvd.nist.gov
@@ -80,3 +105,22 @@ func GetCPE(ctx context.Context, cpeuri string) (*CPE, error) {
 }
 
 // todo: convert given product to CPE2.3 for use in GetCPE()
+
+// ExtractCPE extracts information about the specified CPE into various components, returning any errors encountered.
+func ExtractCPE(ctx context.Context, cpeuri string) (map[string]string, error) {
+	result := map[string]string{}
+
+	match := CPERegex.FindStringSubmatch(cpeuri)
+	if len(match) <= 1 {
+		return nil, fmt.Errorf("unable to extract components of CPE %s", cpeuri)
+	}
+
+	match = match[1:] // remove the complete cpeuri match
+	for i, key := range CPEComponents {
+		if i < len(match) {
+			result[key] = match[i]
+		}
+	}
+
+	return result, nil
+}

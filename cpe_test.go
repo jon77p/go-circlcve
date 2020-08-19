@@ -55,3 +55,24 @@ func ExampleGetCPE() {
 	fmt.Println(result.CPE23URI)
 	// Output: cpe:2.3:a:openbsd:openssh:7.5:-:*:*:*:*:*:*
 }
+
+func TestExtractCPE(t *testing.T) {
+	cpe := "cpe:2.3:a:python:python:2.7.0"
+
+	result, err := ExtractCPE(context.Background(), cpe)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	if vendor := result["vendor"]; vendor != "python" {
+		t.Error("Failed to extract correct vendor")
+		return
+	} else if product := result["product"]; product != "python" {
+		t.Error("Failed to extract correct product")
+		return
+	} else if ver := result["version"]; ver != "2.7.0" {
+		t.Error("Failed to extract correct version")
+		return
+	}
+}
