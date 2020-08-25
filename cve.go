@@ -62,3 +62,16 @@ func GetCVE(ctx context.Context, cveid string) (*CVE, error) {
 	}
 	return entry.ConvertCVE()
 }
+
+func (vc CVEVulnerableConfiguration) String() string {
+	return vc.ID
+}
+
+func (vcs CVEVulnerableConfigurations) Strings() []string {
+	s := make([]string, 0)
+	for _, vc := range vcs {
+		s = append(s, vc.String())
+	}
+
+	return s
+}

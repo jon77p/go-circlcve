@@ -60,6 +60,8 @@ type CVEVulnerableConfiguration struct {
 	title string `json:"title"`
 }
 
+type CVEVulnerableConfigurations []CVEVulnerableConfiguration
+
 // CVE is the raw CVE response from circl.lu
 type CVE struct {
 	Circl
@@ -77,7 +79,7 @@ type CVE struct {
 	References                    []string                     `json:"references"`
 	RefMap                        CVERefMap                    `json:"refmap"`
 	Summary                       string                       `json:"summary"`
-	VulnerableConfiguration       []CVEVulnerableConfiguration `json:"vulnerable_configuration"`
+	VulnerableConfiguration       CVEVulnerableConfigurations `json:"vulnerable_configuration"`
 	VulnerableConfigurationCPE2_2 []string                     `json:"vulnerable_configuration_cpe_2_2"`
 	VulnerableProduct             []string                     `json:"vulnerable_product"`
 }
